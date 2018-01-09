@@ -23,3 +23,15 @@
 [[constraint]]
   name = "github.com/ddliu/go-httpclient"
   version = "0.5.1"
+
+[[constraint]]
+  name = "github.com/sirupsen/logrus"
+  version = "1.0.4"
+
+[[constraint]]
+  name = "github.com/robfig/cron"
+  version = "1.0.0"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/jasonlvhit/gocron"

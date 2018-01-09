@@ -6,14 +6,13 @@ import (
 	"strconv"
 	"strings"
 
-	"log"
-
 	"encoding/csv"
 	"os"
 
 	"time"
 
 	"github.com/gocolly/colly"
+	"github.com/sirupsen/logrus"
 )
 
 var regexNumber = regexp.MustCompile(`[ a-zA-Z\$\.]`)
@@ -42,7 +41,7 @@ func toMoney(value string) float64 {
 	value = regexNumber.ReplaceAllString(value, "")
 	number, err := strconv.ParseFloat(strings.Replace(value, ",", ".", 1), 64)
 	if err != nil {
-		log.Printf("Error on convert %s: %s", value, err)
+		logrus.Errorf("Error on convert %s: %s", value, err)
 	}
 	return number
 }
@@ -58,6 +57,7 @@ func saveMarketCSV(market Market) error {
 	writer := csv.NewWriter(file)
 	defer writer.Flush()
 
+	logrus.Infof("Market saved at %s", time.Now())
 	return writer.Write(market.ToArray())
 }
 
@@ -82,6 +82,12 @@ func RunMarket() error {
 
 	c.OnHTML(".last-child .last", func(e *colly.HTMLElement) {
 		market.Bitcoin = toMoney(e.Text)
+	})
+
+	c.OnError(func(r *colly.Response, err error) {
+		logrus.WithField("status", r.StatusCode).
+			WithField("response", string(r.Body)).
+			Error(err)
 	})
 
 	c.Visit("http://www.infomoney.com.br/mercados/cambio")

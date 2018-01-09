@@ -9,9 +9,8 @@ import (
 	"strconv"
 	"time"
 
-	"log"
-
 	"github.com/ddliu/go-httpclient"
+	"github.com/sirupsen/logrus"
 )
 
 const CRIPTO_API = "https://api.coinmarketcap.com/v1/ticker/%s"
@@ -55,12 +54,12 @@ func (c *Criptocoin) ToArray() []string {
 func GetCoin(name string) (*Criptocoin, error) {
 	res, err := httpclient.Get(fmt.Sprintf(CRIPTO_API, name), nil)
 	if err != nil {
-		return nil, fmt.Errorf("Error on critpo request: %s\n", err)
+		return nil, fmt.Errorf("Error on critpo request: %s", err)
 	}
 
 	coins := make([]*Criptocoin, 0)
 	if err := json.NewDecoder(res.Body).Decode(&coins); err != nil {
-		return nil, fmt.Errorf("(main) Error on parse cripto response: %s\n", err)
+		return nil, fmt.Errorf("Error on parse cripto response: %s", err)
 	}
 
 	if len(coins) > 0 {
@@ -84,7 +83,7 @@ func saveCriptoCSV(cripto *Criptocoin, coin string) error {
 }
 
 func RunCripto() error {
-	coins := []string{"bitcoin", "ripple", "ethereum", "bitcoin-cash"}
+	coins := []string{"bitcoin", "ripple", "ethereum", "iota", "bitcoin-cash"}
 	for _, coin := range coins {
 		res, err := GetCoin(coin)
 		if err != nil {
@@ -92,8 +91,9 @@ func RunCripto() error {
 		}
 		err = saveCriptoCSV(res, coin)
 		if err != nil {
-			log.Println("Err on save cripto: ", err)
+			logrus.Errorf("Err on save cripto: %s", err)
 		}
 	}
+	logrus.Infof("Cripto saved at %s", time.Now())
 	return nil
 }
