@@ -3,11 +3,27 @@ Bitcoin value prediction by machine learning (Logistic regression).
 
 :construction: WORK IN PROGRESS :construction:
 
-### Libraries
-- Pandas
-- Numpy
-- Keras
-- Tensorflow
+### Crawler
+The Golang crawler saves criptocurrencies values, euro and dolar value each 15 minutes:
+- `docker pull rodrigobrito/crawler-btc`
+- `docker docker run -v$(pwd)/data:/go/src/crawler/data rodrigobrito/crawler-btc -d`
 
-### Resources
-Dataset provided by [SKR](https://www.kaggle.com/sudalairajkumar/cryptocurrencypricehistory)
+Crawler information:
+- Bitcoin
+- Ethereum
+- IOTA
+- Ripple
+- Dolar
+- Euro
+- Nasdaq
+- Bovespa
+
+### Libraries
+- Golang
+  - GoCron - github.com/jasonlvhit/gocron
+  - GoHTTPClient - github.com/ddliu/go-httpclient
+- Python
+  - Pandas
+  - Numpy
+  - Keras
+  - Tensorflow
